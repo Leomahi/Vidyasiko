@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          badges: string[]
+          created_at: string
+          display_name: string
+          id: string
+          last_active: string | null
+          level: number
+          streak: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          badges?: string[]
+          created_at?: string
+          display_name?: string
+          id?: string
+          last_active?: string | null
+          level?: number
+          streak?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          badges?: string[]
+          created_at?: string
+          display_name?: string
+          id?: string
+          last_active?: string | null
+          level?: number
+          streak?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      quiz_scores: {
+        Row: {
+          created_at: string
+          id: string
+          questions_correct: number
+          questions_total: number
+          score: number
+          subject_id: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          questions_correct?: number
+          questions_total?: number
+          score?: number
+          subject_id: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          questions_correct?: number
+          questions_total?: number
+          score?: number
+          subject_id?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
+      subject_progress: {
+        Row: {
+          completed_lessons: number
+          created_at: string
+          id: string
+          progress: number
+          subject_id: string
+          total_lessons: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_lessons?: number
+          created_at?: string
+          id?: string
+          progress?: number
+          subject_id: string
+          total_lessons?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_lessons?: number
+          created_at?: string
+          id?: string
+          progress?: number
+          subject_id?: string
+          total_lessons?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
