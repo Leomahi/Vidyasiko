@@ -9,11 +9,14 @@ import SubjectCard from "@/components/SubjectCard";
 import Leaderboard from "@/components/Leaderboard";
 import BadgeWall from "@/components/BadgeWall";
 import QuizGame from "@/components/QuizGame";
+import FlashcardGame from "@/components/FlashcardGame";
+import MatchingGame from "@/components/MatchingGame";
+import WordScramble from "@/components/WordScramble";
 import TeacherAnalytics from "@/components/TeacherAnalytics";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, BarChart3, LogOut } from "lucide-react";
+import { GraduationCap, BarChart3, LogOut, BookOpen, Puzzle, Type } from "lucide-react";
 
-type View = "dashboard" | "quiz" | "teacher";
+type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "teacher";
 
 export default function Index() {
   const { user, signOut } = useAuth();
