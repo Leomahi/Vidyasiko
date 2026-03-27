@@ -91,12 +91,31 @@ export default function Index() {
   if (view === "quiz") {
     return (
       <div className="min-h-screen p-4 md:p-8">
-        <QuizGame
-          questions={quizQuestions}
-          language={language}
-          onBack={() => setView("dashboard")}
-          onComplete={handleQuizComplete}
-        />
+        <QuizGame questions={quizQuestions} language={language} onBack={() => setView("dashboard")} onComplete={handleQuizComplete} />
+      </div>
+    );
+  }
+
+  if (view === "flashcards") {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <FlashcardGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} />
+      </div>
+    );
+  }
+
+  if (view === "matching") {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <MatchingGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} />
+      </div>
+    );
+  }
+
+  if (view === "scramble") {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <WordScramble language={language} onBack={() => setView("dashboard")} onComplete={handleScrambleComplete} />
       </div>
     );
   }
