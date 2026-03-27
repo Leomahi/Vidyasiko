@@ -9,11 +9,14 @@ import SubjectCard from "@/components/SubjectCard";
 import Leaderboard from "@/components/Leaderboard";
 import BadgeWall from "@/components/BadgeWall";
 import QuizGame from "@/components/QuizGame";
+import FlashcardGame from "@/components/FlashcardGame";
+import MatchingGame from "@/components/MatchingGame";
+import WordScramble from "@/components/WordScramble";
 import TeacherAnalytics from "@/components/TeacherAnalytics";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, BarChart3, LogOut } from "lucide-react";
+import { GraduationCap, BarChart3, LogOut, BookOpen, Puzzle, Type } from "lucide-react";
 
-type View = "dashboard" | "quiz" | "teacher";
+type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "teacher";
 
 export default function Index() {
   const { user, signOut } = useAuth();
@@ -47,6 +50,28 @@ export default function Index() {
     await loadData();
   };
 
+  const handleGenericXp = async (xpEarned: number) => {
+    if (!user) return;
+    await addXpToProfile(user.id, xpEarned);
+    await loadData();
+  };
+
+  const handleScrambleComplete = async (xpEarned: number, correctCount: number) => {
+    if (!user) return;
+    await Promise.all([
+      addXpToProfile(user.id, xpEarned),
+      saveQuizScore({
+        user_id: user.id,
+        subject_id: "scramble",
+        score: correctCount * 15,
+        xp_earned: xpEarned,
+        questions_total: 8,
+        questions_correct: correctCount,
+      }),
+    ]);
+    await loadData();
+  };
+
   const studentProfile = {
     name: profile?.display_name ?? "Student",
     xp: profile?.xp ?? 0,
@@ -66,12 +91,31 @@ export default function Index() {
   if (view === "quiz") {
     return (
       <div className="min-h-screen p-4 md:p-8">
-        <QuizGame
-          questions={quizQuestions}
-          language={language}
-          onBack={() => setView("dashboard")}
-          onComplete={handleQuizComplete}
-        />
+        <QuizGame questions={quizQuestions} language={language} onBack={() => setView("dashboard")} onComplete={handleQuizComplete} />
+      </div>
+    );
+  }
+
+  if (view === "flashcards") {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <FlashcardGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} />
+      </div>
+    );
+  }
+
+  if (view === "matching") {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <MatchingGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} />
+      </div>
+    );
+  }
+
+  if (view === "scramble") {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <WordScramble language={language} onBack={() => setView("dashboard")} onComplete={handleScrambleComplete} />
       </div>
     );
   }
@@ -129,20 +173,29 @@ export default function Index() {
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="bg-gradient-to-r from-secondary to-secondary/80 rounded-3xl p-6 flex items-center justify-between"
-          >
-            <div>
-              <h3 className="text-xl font-bold text-secondary-foreground">Daily Challenge 🎯</h3>
-              <p className="text-secondary-foreground/80 text-sm">Complete 5 questions to earn bonus XP!</p>
+          <div>
+            <h2 className="text-xl font-bold mb-4">Games 🎮</h2>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {[
+                { icon: "🧠", label: t("quiz", language), desc: "Test your knowledge", view: "quiz" as View, color: "from-primary/20 to-primary/5" },
+                { icon: "📇", label: "Flashcards", desc: "Review key concepts", view: "flashcards" as View, color: "from-secondary/20 to-secondary/5" },
+                { icon: "🧩", label: "Match Game", desc: "Match terms & definitions", view: "matching" as View, color: "from-accent/20 to-accent/5" },
+                { icon: "🔤", label: "Word Scramble", desc: "Unscramble science words", view: "scramble" as View, color: "from-level/20 to-level/5" },
+              ].map((game) => (
+                <motion.button
+                  key={game.view}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setView(game.view)}
+                  className={`bg-gradient-to-br ${game.color} rounded-2xl p-4 text-left border border-border hover:shadow-md transition-shadow`}
+                >
+                  <span className="text-2xl">{game.icon}</span>
+                  <p className="font-bold mt-1">{game.label}</p>
+                  <p className="text-xs text-muted-foreground">{game.desc}</p>
+                </motion.button>
+              ))}
             </div>
-            <Button onClick={() => setView("quiz")} variant="secondary" size="lg" className="rounded-full bg-card text-foreground hover:bg-card/90 shadow-lg">
-              {t("quiz", language)}
-            </Button>
-          </motion.div>
+          </div>
 
           <BadgeWall badges={studentProfile.badges} language={language} />
         </div>
