@@ -50,6 +50,28 @@ export default function Index() {
     await loadData();
   };
 
+  const handleGenericXp = async (xpEarned: number) => {
+    if (!user) return;
+    await addXpToProfile(user.id, xpEarned);
+    await loadData();
+  };
+
+  const handleScrambleComplete = async (xpEarned: number, correctCount: number) => {
+    if (!user) return;
+    await Promise.all([
+      addXpToProfile(user.id, xpEarned),
+      saveQuizScore({
+        user_id: user.id,
+        subject_id: "scramble",
+        score: correctCount * 15,
+        xp_earned: xpEarned,
+        questions_total: 8,
+        questions_correct: correctCount,
+      }),
+    ]);
+    await loadData();
+  };
+
   const studentProfile = {
     name: profile?.display_name ?? "Student",
     xp: profile?.xp ?? 0,
