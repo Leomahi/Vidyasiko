@@ -10,6 +10,8 @@ export interface Subject {
   completedLessons: number;
 }
 
+export type Difficulty = "easy" | "medium" | "hard";
+
 export interface QuizQuestion {
   id: string;
   question: string;
@@ -17,6 +19,7 @@ export interface QuizQuestion {
   correctAnswer: number;
   xpReward: number;
   subject: string;
+  difficulty: Difficulty;
 }
 
 export interface StudentProfile {
