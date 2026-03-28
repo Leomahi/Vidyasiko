@@ -96,16 +96,30 @@ export const quizQuestions: QuizQuestion[] = [
   { id: "s19", question: "Stomata in plants are primarily responsible for?", options: ["Absorption", "Gas exchange", "Photosynthesis", "Transport"], correctAnswer: 1, xpReward: 20, subject: "science", difficulty: "hard" },
   { id: "s20", question: "What is the scientific name of humans?", options: ["Homo erectus", "Homo habilis", "Homo sapiens", "Homo neanderthalensis"], correctAnswer: 2, xpReward: 20, subject: "science", difficulty: "hard" },
 
-  // ===================== ENGLISH (9 questions - unchanged) =====================
+  // ===================== ENGLISH (20 questions) =====================
+  // Easy - Grammar & Vocabulary
   { id: "e1", question: "What is the plural of 'child'?", options: ["Childs", "Children", "Childes", "Childern"], correctAnswer: 1, xpReward: 5, subject: "english", difficulty: "easy" },
   { id: "e2", question: "Which is a synonym for 'happy'?", options: ["Sad", "Joyful", "Angry", "Tired"], correctAnswer: 1, xpReward: 5, subject: "english", difficulty: "easy" },
   { id: "e3", question: "What type of word is 'quickly'?", options: ["Noun", "Verb", "Adjective", "Adverb"], correctAnswer: 3, xpReward: 5, subject: "english", difficulty: "easy" },
-  { id: "e4", question: "What is a metaphor?", options: ["A comparison using 'like'", "A direct comparison", "An exaggeration", "A question"], correctAnswer: 1, xpReward: 10, subject: "english", difficulty: "medium" },
-  { id: "e5", question: "'She sells sea shells' is an example of?", options: ["Metaphor", "Simile", "Alliteration", "Irony"], correctAnswer: 2, xpReward: 10, subject: "english", difficulty: "medium" },
-  { id: "e6", question: "What is the past tense of 'swim'?", options: ["Swimmed", "Swam", "Swum", "Swimming"], correctAnswer: 1, xpReward: 10, subject: "english", difficulty: "medium" },
-  { id: "e7", question: "Who wrote 'Romeo and Juliet'?", options: ["Dickens", "Shakespeare", "Austen", "Brontë"], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
-  { id: "e8", question: "What is an oxymoron?", options: ["A repeated sound", "Contradictory terms together", "A comparison", "A question as a statement"], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
-  { id: "e9", question: "Identify the correct sentence:", options: ["Their going home.", "They're going home.", "There going home.", "Theyre going home."], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
+  { id: "e4", question: "Which is the correct spelling?", options: ["Recieve", "Receive", "Receve", "Receeve"], correctAnswer: 1, xpReward: 5, subject: "english", difficulty: "easy" },
+  { id: "e5", question: "What is the opposite of 'generous'?", options: ["Kind", "Selfish", "Brave", "Gentle"], correctAnswer: 1, xpReward: 5, subject: "english", difficulty: "easy" },
+  { id: "e6", question: "Which sentence is correct?", options: ["He don't know.", "He doesn't know.", "He not know.", "He do not knows."], correctAnswer: 1, xpReward: 5, subject: "english", difficulty: "easy" },
+  { id: "e7", question: "What is a noun?", options: ["An action word", "A describing word", "A naming word", "A joining word"], correctAnswer: 2, xpReward: 5, subject: "english", difficulty: "easy" },
+  // Medium - Grammar & Literature
+  { id: "e8", question: "What is a metaphor?", options: ["A comparison using 'like'", "A direct comparison", "An exaggeration", "A question"], correctAnswer: 1, xpReward: 10, subject: "english", difficulty: "medium" },
+  { id: "e9", question: "'She sells sea shells' is an example of?", options: ["Metaphor", "Simile", "Alliteration", "Irony"], correctAnswer: 2, xpReward: 10, subject: "english", difficulty: "medium" },
+  { id: "e10", question: "What is the past tense of 'swim'?", options: ["Swimmed", "Swam", "Swum", "Swimming"], correctAnswer: 1, xpReward: 10, subject: "english", difficulty: "medium" },
+  { id: "e11", question: "'As brave as a lion' is an example of?", options: ["Metaphor", "Simile", "Personification", "Hyperbole"], correctAnswer: 1, xpReward: 10, subject: "english", difficulty: "medium" },
+  { id: "e12", question: "What is the superlative form of 'good'?", options: ["Gooder", "Better", "Best", "Most good"], correctAnswer: 2, xpReward: 10, subject: "english", difficulty: "medium" },
+  { id: "e13", question: "Which word is a conjunction?", options: ["Quickly", "Beautiful", "And", "Jump"], correctAnswer: 2, xpReward: 10, subject: "english", difficulty: "medium" },
+  { id: "e14", question: "What is a synonym for 'commence'?", options: ["End", "Begin", "Pause", "Continue"], correctAnswer: 1, xpReward: 10, subject: "english", difficulty: "medium" },
+  // Hard - Literature & Advanced Grammar
+  { id: "e15", question: "Who wrote 'Romeo and Juliet'?", options: ["Dickens", "Shakespeare", "Austen", "Brontë"], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
+  { id: "e16", question: "What is an oxymoron?", options: ["A repeated sound", "Contradictory terms together", "A comparison", "A question as a statement"], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
+  { id: "e17", question: "Identify the correct sentence:", options: ["Their going home.", "They're going home.", "There going home.", "Theyre going home."], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
+  { id: "e18", question: "Who wrote 'Pride and Prejudice'?", options: ["Emily Brontë", "Jane Austen", "Virginia Woolf", "Mary Shelley"], correctAnswer: 1, xpReward: 20, subject: "english", difficulty: "hard" },
+  { id: "e19", question: "What literary device is 'The wind whispered through the trees'?", options: ["Simile", "Alliteration", "Personification", "Hyperbole"], correctAnswer: 2, xpReward: 20, subject: "english", difficulty: "hard" },
+  { id: "e20", question: "Which is an example of irony?", options: ["A fire station burns down", "A dog barks loudly", "The sun rises east", "Rain falls in monsoon"], correctAnswer: 0, xpReward: 20, subject: "english", difficulty: "hard" },
 
   // ===================== COMPUTER SCIENCE (20 questions) =====================
   // Easy - HTML
