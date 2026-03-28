@@ -17,11 +17,13 @@ import { Button } from "@/components/ui/button";
 import { GraduationCap, BarChart3, LogOut, BookOpen, Puzzle, Type } from "lucide-react";
 
 type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "teacher";
+type QuizSubjectFilter = string | null;
 
 export default function Index() {
   const { user, signOut } = useAuth();
   const [language, setLanguage] = useState<Language>("en");
   const [view, setView] = useState<View>("dashboard");
+  const [quizSubject, setQuizSubject] = useState<QuizSubjectFilter>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [leaderboardData, setLeaderboardData] = useState<Profile[]>([]);
 
@@ -91,7 +93,7 @@ export default function Index() {
   if (view === "quiz") {
     return (
       <div className="min-h-screen p-4 md:p-8">
-        <QuizGame questions={quizQuestions} language={language} onBack={() => setView("dashboard")} onComplete={handleQuizComplete} />
+        <QuizGame questions={quizSubject ? quizQuestions.filter(q => q.subject === quizSubject) : quizQuestions} language={language} onBack={() => { setView("dashboard"); setQuizSubject(null); }} onComplete={handleQuizComplete} subjectName={quizSubject} />
       </div>
     );
   }
@@ -168,7 +170,7 @@ export default function Index() {
             <h2 className="text-xl font-bold mb-4">{t("subjects", language)}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {defaultSubjects.map((subject, i) => (
-                <SubjectCard key={subject.id} subject={subject} language={language} index={i} onClick={() => setView("quiz")} />
+                <SubjectCard key={subject.id} subject={subject} language={language} index={i} onClick={() => { setQuizSubject(subject.id); setView("quiz"); }} />
               ))}
             </div>
           </div>
@@ -177,7 +179,7 @@ export default function Index() {
             <h2 className="text-xl font-bold mb-4">Games 🎮</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { icon: "🧠", label: t("quiz", language), desc: "Test your knowledge", view: "quiz" as View, color: "from-primary/20 to-primary/5" },
+                { icon: "🧠", label: t("quiz", language), desc: "All subjects mixed", view: "quiz" as View, color: "from-primary/20 to-primary/5" },
                 { icon: "📇", label: "Flashcards", desc: "Review key concepts", view: "flashcards" as View, color: "from-secondary/20 to-secondary/5" },
                 { icon: "🧩", label: "Match Game", desc: "Match terms & definitions", view: "matching" as View, color: "from-accent/20 to-accent/5" },
                 { icon: "🔤", label: "Word Scramble", desc: "Unscramble science words", view: "scramble" as View, color: "from-level/20 to-level/5" },
@@ -186,7 +188,7 @@ export default function Index() {
                   key={game.view}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setView(game.view)}
+                  onClick={() => { if (game.view === "quiz") setQuizSubject(null); setView(game.view); }}
                   className={`bg-gradient-to-br ${game.color} rounded-2xl p-4 text-left border border-border hover:shadow-md transition-shadow`}
                 >
                   <span className="text-2xl">{game.icon}</span>

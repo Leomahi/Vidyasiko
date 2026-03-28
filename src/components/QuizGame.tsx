@@ -9,6 +9,7 @@ interface Props {
   language: Language;
   onBack: () => void;
   onComplete: (xpEarned: number, correctCount: number) => void;
+  subjectName?: string | null;
 }
 
 const difficultyColors: Record<Difficulty, string> = {
@@ -23,7 +24,7 @@ const difficultyLabels: Record<Difficulty, string> = {
   hard: "🔴 Hard",
 };
 
-export default function QuizGame({ questions, language, onBack, onComplete }: Props) {
+export default function QuizGame({ questions, language, onBack, onComplete, subjectName }: Props) {
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
 
   const filtered = useMemo(
@@ -58,8 +59,8 @@ export default function QuizGame({ questions, language, onBack, onComplete }: Pr
             <ArrowLeft className="w-5 h-5 mr-1" /> Back
           </Button>
         </div>
-        <h2 className="text-2xl font-bold mb-2">Choose Difficulty</h2>
-        <p className="text-muted-foreground mb-6 text-sm">Select a level or play all questions mixed</p>
+        <h2 className="text-2xl font-bold mb-2">{subjectName ? `${subjectName.charAt(0).toUpperCase() + subjectName.slice(1)} Quiz` : "Choose Difficulty"}</h2>
+        <p className="text-muted-foreground mb-6 text-sm">{subjectName ? `${questions.length} questions available` : "Select a level or play all questions mixed"}</p>
         <div className="grid gap-3">
           {(["easy", "medium", "hard"] as Difficulty[]).map((d) => {
             const count = questions.filter((q) => q.difficulty === d).length;
