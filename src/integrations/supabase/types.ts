@@ -19,6 +19,7 @@ export type Database = {
           badges: string[]
           created_at: string
           display_name: string
+          grade: number | null
           id: string
           last_active: string | null
           level: number
@@ -31,6 +32,7 @@ export type Database = {
           badges?: string[]
           created_at?: string
           display_name?: string
+          grade?: number | null
           id?: string
           last_active?: string | null
           level?: number
@@ -43,6 +45,7 @@ export type Database = {
           badges?: string[]
           created_at?: string
           display_name?: string
+          grade?: number | null
           id?: string
           last_active?: string | null
           level?: number
