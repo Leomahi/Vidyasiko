@@ -1,34 +1,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Language, t } from "@/lib/data";
+import { Language, t, Flashcard } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw, Zap, ChevronLeft, ChevronRight } from "lucide-react";
-
-export interface Flashcard {
-  id: string;
-  front: string;
-  back: string;
-  subject: string;
-}
-
-const flashcards: Flashcard[] = [
-  { id: "f1", front: "What is photosynthesis?", back: "The process by which plants convert sunlight, water, and CO₂ into glucose and oxygen.", subject: "science" },
-  { id: "f2", front: "What is the Pythagorean theorem?", back: "a² + b² = c², where c is the hypotenuse of a right triangle.", subject: "math" },
-  { id: "f3", front: "What is an adjective?", back: "A word that describes or modifies a noun (e.g., tall, blue, happy).", subject: "english" },
-  { id: "f4", front: "What is a variable in programming?", back: "A named container that stores a value which can change during program execution.", subject: "cs" },
-  { id: "f5", front: "What is Newton's 3rd law?", back: "For every action, there is an equal and opposite reaction.", subject: "science" },
-  { id: "f6", front: "What is the area of a circle?", back: "A = πr², where r is the radius.", subject: "math" },
-  { id: "f7", front: "What is a simile?", back: "A figure of speech comparing two things using 'like' or 'as' (e.g., fast as lightning).", subject: "english" },
-  { id: "f8", front: "What is an algorithm?", back: "A step-by-step set of instructions to solve a problem or complete a task.", subject: "cs" },
-];
 
 interface Props {
   language: Language;
   onBack: () => void;
   onComplete: (xpEarned: number) => void;
+  flashcards: Flashcard[];
 }
 
-export default function FlashcardGame({ language, onBack, onComplete }: Props) {
+export default function FlashcardGame({ language, onBack, onComplete, flashcards }: Props) {
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [reviewed, setReviewed] = useState<Set<number>>(new Set());
@@ -52,6 +35,8 @@ export default function FlashcardGame({ language, onBack, onComplete }: Props) {
   const handleFinish = () => {
     onComplete(flashcards.length * 5);
   };
+
+  if (!flashcards.length) return <div className="text-center p-8">No flashcards available.</div>;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -78,7 +63,6 @@ export default function FlashcardGame({ language, onBack, onComplete }: Props) {
           animate={{ rotateY: flipped ? 180 : 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Front */}
           <div
             className="absolute inset-0 rounded-3xl bg-card border-2 border-border shadow-lg p-8 flex flex-col items-center justify-center text-center backface-hidden"
             style={{ backfaceVisibility: "hidden" }}
@@ -89,7 +73,6 @@ export default function FlashcardGame({ language, onBack, onComplete }: Props) {
               <RotateCcw className="w-3 h-3" /> Tap to flip
             </p>
           </div>
-          {/* Back */}
           <div
             className="absolute inset-0 rounded-3xl bg-primary/10 border-2 border-primary shadow-lg p-8 flex flex-col items-center justify-center text-center"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}

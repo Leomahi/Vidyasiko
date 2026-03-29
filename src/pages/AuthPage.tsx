@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { GraduationCap } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Grade } from "@/lib/data";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [grade, setGrade] = useState<Grade>(8);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +28,7 @@ export default function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { display_name: displayName || "Student" } },
+          options: { data: { display_name: displayName || "Student", grade } },
         });
         if (error) throw error;
         toast.success("Account created! 🎉");
@@ -57,12 +59,26 @@ export default function AuthPage() {
           <h2 className="text-xl font-bold text-center">{isLogin ? "Welcome Back" : "Create Account"}</h2>
 
           {!isLogin && (
-            <Input
-              placeholder="Display Name"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              className="rounded-xl"
-            />
+            <>
+              <Input
+                placeholder="Display Name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="rounded-xl"
+              />
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-1 block">Select Your Grade</label>
+                <select
+                  value={grade}
+                  onChange={(e) => setGrade(Number(e.target.value) as Grade)}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {[6, 7, 8, 9, 10, 11, 12].map((g) => (
+                    <option key={g} value={g}>Grade {g}</option>
+                  ))}
+                </select>
+              </div>
+            </>
           )}
           <Input
             type="email"

@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { subjects as defaultSubjects, quizQuestions, Language, t } from "@/lib/data";
+import { gradeContent, Grade, Language, t } from "@/lib/data";
 import { useAuth } from "@/hooks/useAuth";
-import { getProfile, getLeaderboard, addXpToProfile, saveQuizScore, Profile } from "@/lib/db";
+import { getProfile, getLeaderboard, addXpToProfile, saveQuizScore, updateProfile, Profile } from "@/lib/db";
 import LanguageSelector from "@/components/LanguageSelector";
 import StatsBar from "@/components/StatsBar";
 import SubjectCard from "@/components/SubjectCard";
@@ -13,8 +13,9 @@ import FlashcardGame from "@/components/FlashcardGame";
 import MatchingGame from "@/components/MatchingGame";
 import WordScramble from "@/components/WordScramble";
 import TeacherAnalytics from "@/components/TeacherAnalytics";
+import GradeSelector from "@/components/GradeSelector";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, BarChart3, LogOut, BookOpen, Puzzle, Type } from "lucide-react";
+import { GraduationCap, BarChart3, LogOut } from "lucide-react";
 
 type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "teacher";
 type QuizSubjectFilter = string | null;
@@ -36,16 +37,41 @@ export default function Index() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
+  const userGrade = (profile?.grade as Grade) ?? null;
+  const content = userGrade ? gradeContent[userGrade] : null;
+
+  const handleGradeSelect = async (grade: Grade) => {
+    if (!user) return;
+    await updateProfile(user.id, { grade } as any);
+    await loadData();
+  };
+
+  // Show grade selector if no grade set
+  if (profile && !userGrade) {
+    return <GradeSelector onSelect={handleGradeSelect} />;
+  }
+
+  // Still loading
+  if (!profile || !content) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  const { subjects, quizQuestions, flashcards, matchPairs, scrambleWords } = content;
+
   const handleQuizComplete = async (xpEarned: number, correctCount: number) => {
     if (!user) return;
     await Promise.all([
       addXpToProfile(user.id, xpEarned),
       saveQuizScore({
         user_id: user.id,
-        subject_id: "mixed",
+        subject_id: quizSubject || "mixed",
         score: correctCount * 10,
         xp_earned: xpEarned,
-        questions_total: quizQuestions.length,
+        questions_total: (quizSubject ? quizQuestions.filter(q => q.subject === quizSubject) : quizQuestions).length,
         questions_correct: correctCount,
       }),
     ]);
@@ -67,7 +93,7 @@ export default function Index() {
         subject_id: "scramble",
         score: correctCount * 15,
         xp_earned: xpEarned,
-        questions_total: 8,
+        questions_total: scrambleWords.length,
         questions_correct: correctCount,
       }),
     ]);
@@ -75,11 +101,11 @@ export default function Index() {
   };
 
   const studentProfile = {
-    name: profile?.display_name ?? "Student",
-    xp: profile?.xp ?? 0,
-    level: profile?.level ?? 1,
-    streak: profile?.streak ?? 0,
-    badges: profile?.badges ?? [],
+    name: profile.display_name ?? "Student",
+    xp: profile.xp ?? 0,
+    level: profile.level ?? 1,
+    streak: profile.streak ?? 0,
+    badges: profile.badges ?? [],
     rank: leaderboardData.findIndex((e) => e.user_id === user?.id) + 1 || 0,
   };
 
@@ -101,7 +127,7 @@ export default function Index() {
   if (view === "flashcards") {
     return (
       <div className="min-h-screen p-4 md:p-8">
-        <FlashcardGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} />
+        <FlashcardGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} flashcards={flashcards} />
       </div>
     );
   }
@@ -109,7 +135,7 @@ export default function Index() {
   if (view === "matching") {
     return (
       <div className="min-h-screen p-4 md:p-8">
-        <MatchingGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} />
+        <MatchingGame language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} pairs={matchPairs} />
       </div>
     );
   }
@@ -117,7 +143,7 @@ export default function Index() {
   if (view === "scramble") {
     return (
       <div className="min-h-screen p-4 md:p-8">
-        <WordScramble language={language} onBack={() => setView("dashboard")} onComplete={handleScrambleComplete} />
+        <WordScramble language={language} onBack={() => setView("dashboard")} onComplete={handleScrambleComplete} words={scrambleWords} />
       </div>
     );
   }
@@ -145,6 +171,9 @@ export default function Index() {
             <h1 className="text-2xl font-bold">VidyaQuest</h1>
             <p className="text-sm text-muted-foreground">
               {language === "hi" ? "नमस्ते" : language === "ta" ? "வணக்கம்" : "Hello"}, {studentProfile.name}! 👋
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
+                {t("grade", language)} {userGrade}
+              </span>
             </p>
           </div>
         </div>
@@ -169,7 +198,7 @@ export default function Index() {
           <div>
             <h2 className="text-xl font-bold mb-4">{t("subjects", language)}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              {defaultSubjects.map((subject, i) => (
+              {subjects.map((subject, i) => (
                 <SubjectCard key={subject.id} subject={subject} language={language} index={i} onClick={() => { setQuizSubject(subject.id); setView("quiz"); }} />
               ))}
             </div>
@@ -178,7 +207,7 @@ export default function Index() {
           <div>
             <h2 className="text-xl font-bold mb-4">Quiz Games 🧠</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {defaultSubjects.map((subject) => {
+              {subjects.map((subject) => {
                 const count = quizQuestions.filter(q => q.subject === subject.id).length;
                 return (
                   <motion.button
@@ -211,9 +240,9 @@ export default function Index() {
             <h2 className="text-xl font-bold mb-4">More Games 🎮</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { icon: "📇", label: "Flashcards", desc: "Review key concepts", view: "flashcards" as View, color: "from-secondary/20 to-secondary/5" },
-                { icon: "🧩", label: "Match Game", desc: "Match terms & definitions", view: "matching" as View, color: "from-accent/20 to-accent/5" },
-                { icon: "🔤", label: "Word Scramble", desc: "Unscramble science words", view: "scramble" as View, color: "from-level/20 to-level/5" },
+                { icon: "📇", label: "Flashcards", desc: `${flashcards.length} cards to review`, view: "flashcards" as View, color: "from-secondary/20 to-secondary/5" },
+                { icon: "🧩", label: "Match Game", desc: `${matchPairs.length} pairs to match`, view: "matching" as View, color: "from-accent/20 to-accent/5" },
+                { icon: "🔤", label: "Word Scramble", desc: `${scrambleWords.length} words to unscramble`, view: "scramble" as View, color: "from-level/20 to-level/5" },
               ].map((game) => (
                 <motion.button
                   key={game.view}
