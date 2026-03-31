@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import AIChatbot from "./components/AIChatbot.tsx";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
+      <AIChatbot />
     </TooltipProvider>
   </QueryClientProvider>
 );
