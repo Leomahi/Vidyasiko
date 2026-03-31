@@ -40,6 +40,7 @@ const App = () => (
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
+      <AIChatbot />
     </TooltipProvider>
   </QueryClientProvider>
 );
