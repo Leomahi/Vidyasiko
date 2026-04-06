@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { StudentProfile, Language, t } from "@/lib/data";
+import { StudentProfile } from "@/lib/data";
+import { Language, t } from "@/lib/translations";
 import { Flame, Star, TrendingUp, Wifi, WifiOff } from "lucide-react";
 
 interface Props {

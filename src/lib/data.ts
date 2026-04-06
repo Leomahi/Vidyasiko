@@ -987,29 +987,7 @@ export const leaderboard: LeaderboardEntry[] = [
   { name: "Vikram", xp: 980, level: 6, avatar: "👦" },
 ];
 
-export type Language = "en" | "hi" | "ta";
+// Re-export Language and t from translations module
+export type { Language } from "@/lib/translations";
+export { t, getSubjectName } from "@/lib/translations";
 
-export const translations: Record<string, Record<Language, string>> = {
-  dashboard: { en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு" },
-  subjects: { en: "Subjects", hi: "विषय", ta: "பாடங்கள்" },
-  leaderboard: { en: "Leaderboard", hi: "लीडरबोर्ड", ta: "தரவரிசை" },
-  quiz: { en: "Start Quiz", hi: "क्विज़ शुरू करें", ta: "வினாடி வினா" },
-  xp: { en: "XP Points", hi: "एक्सपी अंक", ta: "XP புள்ளிகள்" },
-  streak: { en: "Day Streak", hi: "दिन की लकीर", ta: "நாள் தொடர்" },
-  level: { en: "Level", hi: "स्तर", ta: "நிலை" },
-  offline: { en: "Offline Ready", hi: "ऑफलाइन तैयार", ta: "ஆஃப்லைன் தயார்" },
-  teacher: { en: "Teacher View", hi: "शिक्षक दृश्य", ta: "ஆசிரியர் காட்சி" },
-  badges: { en: "Badges", hi: "बैज", ta: "பதக்கங்கள்" },
-  progress: { en: "Progress", hi: "प्रगति", ta: "முன்னேற்றம்" },
-  lessons: { en: "lessons completed", hi: "पाठ पूरे हुए", ta: "பாடங்கள் நிறைவு" },
-  rank: { en: "Rank", hi: "रैंक", ta: "தரம்" },
-  correct: { en: "Correct! 🎉", hi: "सही! 🎉", ta: "சரி! 🎉" },
-  wrong: { en: "Try again! 💪", hi: "फिर कोशिश करो! 💪", ta: "மீண்டும் முயற்சி! 💪" },
-  next: { en: "Next Question", hi: "अगला सवाल", ta: "அடுத்த கேள்வி" },
-  analytics: { en: "Analytics", hi: "विश्लेषण", ta: "பகுப்பாய்வு" },
-  grade: { en: "Grade", hi: "कक्षा", ta: "வகுப்பு" },
-};
-
-export function t(key: string, lang: Language): string {
-  return translations[key]?.[lang] ?? key;
-}
