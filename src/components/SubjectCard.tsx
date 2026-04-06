@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Subject, Language, t } from "@/lib/data";
+import { Subject } from "@/lib/data";
+import { Language, t, getSubjectName } from "@/lib/translations";
 import { Progress } from "@/components/ui/progress";
 
 interface Props {
@@ -17,7 +18,7 @@ const colorMap: Record<string, string> = {
 };
 
 export default function SubjectCard({ subject, language, index, onClick }: Props) {
-  const name = language === "hi" ? subject.nameHi : language === "ta" ? subject.nameTa : subject.name;
+  const name = getSubjectName(subject.id, subject.name, language);
   const gradient = colorMap[subject.color] || "from-primary to-primary/80";
 
   return (
