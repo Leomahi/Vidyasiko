@@ -3,10 +3,12 @@ import { motion } from "framer-motion";
 import { gradeContent, Grade } from "@/lib/data";
 import { Language, t, getSubjectName } from "@/lib/translations";
 import { useAuth } from "@/hooks/useAuth";
-import { getProfile, getLeaderboard, addXpToProfile, saveQuizScore, updateProfile, Profile } from "@/lib/db";
+import { getProfile, getLeaderboard, addXpToProfile, saveQuizScore, updateProfile, syncPendingActions, Profile } from "@/lib/db";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { getCSSubTopicsForGrade } from "@/lib/csSubTopics";
 import { csSubTopicQuestions } from "@/lib/csSubTopics";
 import { getNewGameData } from "@/lib/newGameData";
+import OfflineBanner from "@/components/OfflineBanner";
 import LanguageSelector from "@/components/LanguageSelector";
 import StatsBar from "@/components/StatsBar";
 import SubjectCard from "@/components/SubjectCard";
@@ -31,6 +33,7 @@ type QuizSubjectFilter = string | null;
 
 export default function Index() {
   const { user, signOut } = useAuth();
+  const isOnline = useOnlineStatus();
   const [language, setLanguage] = useState<Language>("en");
   const [view, setView] = useState<View>("dashboard");
   const [quizSubject, setQuizSubject] = useState<QuizSubjectFilter>(null);
@@ -46,6 +49,13 @@ export default function Index() {
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Sync pending offline actions when coming back online
+  useEffect(() => {
+    if (isOnline && user) {
+      syncPendingActions().then(() => loadData());
+    }
+  }, [isOnline, user, loadData]);
 
   const userGrade = (profile?.grade as Grade) ?? null;
   const content = userGrade ? gradeContent[userGrade] : null;
@@ -211,6 +221,7 @@ export default function Index() {
         </div>
       </motion.div>
 
+      {!isOnline && <OfflineBanner />}
       <div className="mb-8"><StatsBar profile={studentProfile} language={language} /></div>
 
       <div className="grid lg:grid-cols-3 gap-6">
