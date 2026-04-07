@@ -33,6 +33,7 @@ type QuizSubjectFilter = string | null;
 
 export default function Index() {
   const { user, signOut } = useAuth();
+  const isOnline = useOnlineStatus();
   const [language, setLanguage] = useState<Language>("en");
   const [view, setView] = useState<View>("dashboard");
   const [quizSubject, setQuizSubject] = useState<QuizSubjectFilter>(null);
@@ -48,6 +49,13 @@ export default function Index() {
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Sync pending offline actions when coming back online
+  useEffect(() => {
+    if (isOnline && user) {
+      syncPendingActions().then(() => loadData());
+    }
+  }, [isOnline, user, loadData]);
 
   const userGrade = (profile?.grade as Grade) ?? null;
   const content = userGrade ? gradeContent[userGrade] : null;
