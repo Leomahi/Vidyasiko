@@ -221,6 +221,7 @@ export default function Index() {
         </div>
       </motion.div>
 
+      {!isOnline && <OfflineBanner />}
       <div className="mb-8"><StatsBar profile={studentProfile} language={language} /></div>
 
       <div className="grid lg:grid-cols-3 gap-6">
