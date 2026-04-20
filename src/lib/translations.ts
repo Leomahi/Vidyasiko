@@ -46,6 +46,9 @@ export const translations: Record<string, Record<Language, string>> = {
   cardsToReview: { en: "cards to review", hi: "कार्ड समीक्षा करें", ta: "அட்டைகள்", te: "కార్డులు", kn: "ಕಾರ್ಡ್‌ಗಳು", ml: "കാർഡുകൾ", mr: "कार्ड" },
   pairsToMatch: { en: "pairs to match", hi: "जोड़ी मिलाएं", ta: "ஜோடிகள்", te: "జతలు", kn: "ಜೋಡಿಗಳು", ml: "ജോഡികൾ", mr: "जोड्या" },
   wordsToUnscramble: { en: "words to unscramble", hi: "शब्द सुलझाएं", ta: "சொற்கள்", te: "పదాలు", kn: "ಪದಗಳು", ml: "വാക്കുകൾ", mr: "शब्द" },
+  stemArcade: { en: "STEM Arcade", hi: "स्टेम आर्केड", ta: "STEM ஆர்கேட்", te: "STEM ఆర్కేడ్", kn: "STEM ಆರ್ಕೇಡ್", ml: "STEM ആർക്കേഡ്", mr: "STEM आर्केड" },
+  allGames: { en: "All Games", hi: "सभी खेल", ta: "அனைத்து விளையாட்டுகள்", te: "అన్ని ఆటలు", kn: "ಎಲ್ಲಾ ಆಟಗಳು", ml: "എല്ലാ ഗെയിമുകളും", mr: "सर्व खेळ" },
+  signOut: { en: "Sign Out", hi: "लॉगआउट", ta: "வெளியேறு", te: "లాగ్ అవుట్", kn: "ಲಾಗ್ ಔಟ್", ml: "ലോഗ് ഔട്ട്", mr: "साइन आउट" },
 };
 
 // Subject name translations by ID
