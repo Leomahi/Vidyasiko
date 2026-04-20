@@ -79,6 +79,41 @@
   }
 }
 
+  /* Gaming theme — neon dark, ported from the STEM games aesthetic */
+  .theme-gaming {
+    --background: 230 35% 7%;
+    --foreground: 195 100% 95%;
+    --card: 230 30% 11%;
+    --card-foreground: 195 100% 95%;
+    --popover: 230 30% 11%;
+    --popover-foreground: 195 100% 95%;
+    --primary: 190 95% 55%;
+    --primary-foreground: 230 40% 8%;
+    --secondary: 270 90% 65%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 230 25% 16%;
+    --muted-foreground: 195 30% 70%;
+    --accent: 320 90% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 230 30% 20%;
+    --input: 230 30% 18%;
+    --ring: 190 95% 55%;
+    --xp: 50 100% 60%;
+    --streak: 15 100% 60%;
+    --level: 190 95% 55%;
+    --sidebar-background: 230 35% 5%;
+    --sidebar-foreground: 195 50% 90%;
+    --sidebar-primary: 190 95% 55%;
+    --sidebar-primary-foreground: 230 40% 8%;
+    --sidebar-accent: 230 25% 14%;
+    --sidebar-accent-foreground: 195 50% 90%;
+    --sidebar-border: 230 30% 18%;
+    --sidebar-ring: 190 95% 55%;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -86,5 +121,12 @@
 
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .theme-gaming body {
+    background-image:
+      radial-gradient(circle at 20% 10%, hsl(190 95% 55% / 0.08), transparent 40%),
+      radial-gradient(circle at 80% 80%, hsl(270 90% 65% / 0.08), transparent 40%);
   }
 }

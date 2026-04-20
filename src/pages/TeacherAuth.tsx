@@ -1,19 +1,18 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GraduationCap } from "lucide-react";
+import { Users, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Grade } from "@/lib/data";
 
-export default function AuthPage() {
+export default function TeacherAuth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [grade, setGrade] = useState<Grade>(8);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,15 +22,18 @@ export default function AuthPage() {
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Welcome back! 🎉");
+        toast.success("Welcome back, teacher! 🎓");
       } else {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { display_name: displayName || "Student", grade } },
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: { display_name: displayName || "Teacher", role: "teacher" },
+          },
         });
         if (error) throw error;
-        toast.success("Account created! 🎉");
+        toast.success("Teacher account created! 🎓");
       }
     } catch (err: any) {
       toast.error(err.message);
@@ -42,63 +44,28 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
+        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
+          <ArrowLeft className="w-4 h-4 mr-1" /> Choose role
+        </Link>
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center mx-auto mb-4">
-            <GraduationCap className="w-9 h-9 text-primary-foreground" />
+          <div className="w-16 h-16 rounded-3xl bg-accent flex items-center justify-center mx-auto mb-4">
+            <Users className="w-9 h-9 text-accent-foreground" />
           </div>
-          <h1 className="text-3xl font-bold">VidyaQuest</h1>
-          <p className="text-muted-foreground mt-1">Gamified Learning for Everyone</p>
+          <h1 className="text-3xl font-bold">Teacher Login</h1>
+          <p className="text-muted-foreground mt-1">Track and analyze student progress</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-card rounded-3xl p-6 shadow-sm border border-border space-y-4">
-          <h2 className="text-xl font-bold text-center">{isLogin ? "Welcome Back" : "Create Account"}</h2>
+          <h2 className="text-xl font-bold text-center">{isLogin ? "Welcome Back" : "Create Teacher Account"}</h2>
 
           {!isLogin && (
-            <>
-              <Input
-                placeholder="Display Name"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="rounded-xl"
-              />
-              <div>
-                <label className="text-sm font-medium text-muted-foreground mb-1 block">Select Your Grade</label>
-                <select
-                  value={grade}
-                  onChange={(e) => setGrade(Number(e.target.value) as Grade)}
-                  className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  {[6, 7, 8, 9, 10, 11, 12].map((g) => (
-                    <option key={g} value={g}>Grade {g}</option>
-                  ))}
-                </select>
-              </div>
-            </>
+            <Input placeholder="Display Name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="rounded-xl" />
           )}
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="rounded-xl"
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            className="rounded-xl"
-          />
+          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="rounded-xl" />
+          <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="rounded-xl" />
 
-          <Button type="submit" className="w-full rounded-xl" disabled={loading}>
+          <Button type="submit" className="w-full rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground" disabled={loading}>
             {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
           </Button>
 
@@ -115,10 +82,8 @@ export default function AuthPage() {
             onClick={async () => {
               setLoading(true);
               try {
-                const { error } = await lovable.auth.signInWithOAuth("google", {
-                  redirect_uri: window.location.origin,
-                });
-                if (error) throw error;
+                const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+                if (result.error) throw result.error;
               } catch (err: any) {
                 toast.error(err.message);
               } finally {

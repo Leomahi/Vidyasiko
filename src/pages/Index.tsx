@@ -23,12 +23,13 @@ import TrueFalseGame from "@/components/TrueFalseGame";
 import DragDropSortGame from "@/components/DragDropSortGame";
 import CrosswordGame from "@/components/CrosswordGame";
 import CSSubTopicPicker from "@/components/CSSubTopicPicker";
-import TeacherAnalytics from "@/components/TeacherAnalytics";
 import GradeSelector from "@/components/GradeSelector";
+import GamesHub from "@/components/GamesHub";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, BarChart3, LogOut } from "lucide-react";
+import { GraduationCap, Gamepad2, LogOut } from "lucide-react";
 
-type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "teacher" | "fillblanks" | "truefalse" | "sorting" | "crossword" | "cs-subtopic";
+type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "fillblanks" | "truefalse" | "sorting" | "crossword" | "cs-subtopic" | "stem-arcade";
 type QuizSubjectFilter = string | null;
 
 export default function Index() {
@@ -190,7 +191,7 @@ export default function Index() {
   if (view === "truefalse") return <div className="min-h-screen p-4 md:p-8"><TrueFalseGame questions={newGameData.trueFalse} onBack={() => setView("dashboard")} onComplete={handleGenericComplete} /></div>;
   if (view === "sorting") return <div className="min-h-screen p-4 md:p-8"><DragDropSortGame challenges={newGameData.sortChallenges} onBack={() => setView("dashboard")} onComplete={handleGenericComplete} /></div>;
   if (view === "crossword") return <div className="min-h-screen p-4 md:p-8"><CrosswordGame clues={newGameData.crosswordClues} onBack={() => setView("dashboard")} onComplete={handleGenericComplete} /></div>;
-  if (view === "teacher") return <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto"><TeacherAnalytics language={language} onBack={() => setView("dashboard")} /></div>;
+  if (view === "stem-arcade") return <div className="min-h-screen p-4 md:p-8"><GamesHub language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} /></div>;
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
@@ -210,11 +211,12 @@ export default function Index() {
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <Button variant="outline" onClick={() => setView("teacher")} className="rounded-full gap-2">
-            <BarChart3 className="w-4 h-4" />
-            {t("teacher", language)}
+          <Button onClick={() => setView("stem-arcade")} className="rounded-full gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+            <Gamepad2 className="w-4 h-4" />
+            {t("stemArcade", language)}
           </Button>
           <LanguageSelector language={language} onChange={setLanguage} />
+          <ThemeToggle />
           <Button variant="ghost" size="icon" onClick={signOut} className="rounded-full">
             <LogOut className="w-4 h-4" />
           </Button>
