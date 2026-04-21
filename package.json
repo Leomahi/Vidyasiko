@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "validate": "node scripts/prebuild-validate.mjs",
+    "css:lint": "node scripts/css-lint-braces.mjs",
+    "css:fix": "node scripts/css-lint-braces.mjs --fix",
     "prebuild": "node scripts/prebuild-validate.mjs",
     "prebuild:dev": "node scripts/prebuild-validate.mjs",
     "build": "vite build",
