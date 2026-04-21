@@ -1,11 +1,10 @@
 /**
- * All 13 STEM games ported from the original Flask engine.
- * Each one is a themed wrapper around the shared canvas MCQ engine,
- * matching the visual identity of the corresponding game in the zip.
+ * 13 STEM games — each a route into the original ShikshaSetu canvas engine.
+ * The engine itself dispatches by (subject, grade); we pick the grade that
+ * makes the engine pick the matching game.
  */
 import { Language } from "@/lib/translations";
-import CanvasGameShell from "./_shared/CanvasGameShell";
-import { biologyQuestions, chemistryQuestions, mathsQuestions, physicsQuestions, pythonQuestions } from "./gameQuestions";
+import OriginalGameShell from "./engine/OriginalGameShell";
 
 interface GameProps {
   language: Language;
@@ -13,87 +12,42 @@ interface GameProps {
   onComplete: (xpEarned: number, correctCount: number) => void;
 }
 
-// PHYSICS
-export const PhysicsArcade = (p: GameProps) => (
-  <CanvasGameShell title="Physics Arcade" emoji="⚡" questions={physicsQuestions}
-    accent="#22d3ee" bgGradient={["#0b1224", "#1a1140"]} totalTime={70} {...p} />
-);
-export const PhysicsShooter = (p: GameProps) => (
-  <CanvasGameShell title="Physics Shooter" emoji="🎯" questions={physicsQuestions}
-    accent="#fbbf24" bgGradient={["#1a0b24", "#3b0764"]} totalTime={60} {...p} />
-);
+type Subject = "physics" | "chemistry" | "biology" | "maths" | "python";
 
-// CHEMISTRY
-export const ChemLab = (p: GameProps) => (
-  <CanvasGameShell title="Chem Lab" emoji="🧪" questions={chemistryQuestions}
-    accent="#a78bfa" bgGradient={["#0c1f1a", "#1b3a4d"]} totalTime={75} {...p} />
-);
-export const ChemHeist = (p: GameProps) => (
-  <CanvasGameShell title="Chem Heist" emoji="🦹‍♂️" questions={chemistryQuestions}
-    accent="#f472b6" bgGradient={["#0a0a18", "#1a0a30"]} totalTime={60} {...p} />
-);
-
-// BIOLOGY
-export const BioDefence = (p: GameProps) => (
-  <CanvasGameShell title="Bio Defence" emoji="🦠" questions={biologyQuestions}
-    accent="#34d399" bgGradient={["#062018", "#0c3a2c"]} totalTime={70} {...p} />
-);
-export const BioDNA = (p: GameProps) => (
-  <CanvasGameShell title="Bio DNA Builder" emoji="🧬" questions={biologyQuestions}
-    accent="#60a5fa" bgGradient={["#0b1a2e", "#1e3a5f"]} totalTime={65} {...p} />
-);
-
-// MATHS
-export const MathsNinja = (p: GameProps) => (
-  <CanvasGameShell title="Maths Ninja" emoji="🥷" questions={mathsQuestions}
-    accent="#f87171" bgGradient={["#180a0a", "#3a1010"]} totalTime={60} {...p} />
-);
-export const MathsLaser = (p: GameProps) => (
-  <CanvasGameShell title="Maths Laser" emoji="🔫" questions={mathsQuestions}
-    accent="#22d3ee" bgGradient={["#06182e", "#082f49"]} totalTime={60} {...p} />
-);
-export const MathsCannon = (p: GameProps) => (
-  <CanvasGameShell title="Maths Cannon" emoji="💣" questions={mathsQuestions}
-    accent="#fb923c" bgGradient={["#1a0e06", "#3a1c0a"]} totalTime={70} {...p} />
-);
-export const MathsMission = (p: GameProps) => (
-  <CanvasGameShell title="Maths Mission" emoji="🚀" questions={mathsQuestions}
-    accent="#a78bfa" bgGradient={["#0a0a24", "#1a1140"]} totalTime={75} {...p} />
-);
-export const CalculusCoaster = (p: GameProps) => (
-  <CanvasGameShell title="Calculus Coaster" emoji="🎢" questions={mathsQuestions}
-    accent="#facc15" bgGradient={["#1a0b2e", "#4c1d95"]} totalTime={80} {...p} />
-);
-
-// PYTHON / CS
-export const PythonFill = (p: GameProps) => (
-  <CanvasGameShell title="Python Fill" emoji="🐍" questions={pythonQuestions}
-    accent="#4ade80" bgGradient={["#0a1a0e", "#1a3a20"]} totalTime={70} {...p} />
-);
-export const PythonDebug = (p: GameProps) => (
-  <CanvasGameShell title="Python Debug" emoji="🐛" questions={pythonQuestions}
-    accent="#f59e0b" bgGradient={["#1a0e0a", "#3a2010"]} totalTime={70} {...p} />
-);
-export const PythonDrag = (p: GameProps) => (
-  <CanvasGameShell title="Python Drag" emoji="🧩" questions={pythonQuestions}
-    accent="#06b6d4" bgGradient={["#0a1a24", "#0e2a40"]} totalTime={70} {...p} />
-);
+function makeGame(title: string, emoji: string, subject: Subject, grade: number) {
+  return (p: GameProps) => (
+    <OriginalGameShell
+      title={title}
+      emoji={emoji}
+      subject={subject}
+      grade={grade}
+      onBack={p.onBack}
+      onComplete={p.onComplete}
+    />
+  );
+}
 
 export const ALL_GAMES = [
-  { id: "physics-arcade",   subject: "physics",   title: "Physics Arcade",   emoji: "⚡",   Component: PhysicsArcade },
-  { id: "physics-shooter",  subject: "physics",   title: "Physics Shooter",  emoji: "🎯",   Component: PhysicsShooter },
-  { id: "chem-lab",         subject: "chemistry", title: "Chem Lab",         emoji: "🧪",   Component: ChemLab },
-  { id: "chem-heist",       subject: "chemistry", title: "Chem Heist",       emoji: "🦹‍♂️", Component: ChemHeist },
-  { id: "bio-defence",      subject: "biology",   title: "Bio Defence",      emoji: "🦠",   Component: BioDefence },
-  { id: "bio-dna",          subject: "biology",   title: "Bio DNA Builder",  emoji: "🧬",   Component: BioDNA },
-  { id: "maths-ninja",      subject: "maths",     title: "Maths Ninja",      emoji: "🥷",   Component: MathsNinja },
-  { id: "maths-laser",      subject: "maths",     title: "Maths Laser",      emoji: "🔫",   Component: MathsLaser },
-  { id: "maths-cannon",     subject: "maths",     title: "Maths Cannon",     emoji: "💣",   Component: MathsCannon },
-  { id: "maths-mission",    subject: "maths",     title: "Maths Mission",    emoji: "🚀",   Component: MathsMission },
-  { id: "calculus-coaster", subject: "maths",     title: "Calculus Coaster", emoji: "🎢",   Component: CalculusCoaster },
-  { id: "python-fill",      subject: "python",    title: "Python Fill",      emoji: "🐍",   Component: PythonFill },
-  { id: "python-debug",     subject: "python",    title: "Python Debug",     emoji: "🐛",   Component: PythonDebug },
-  { id: "python-drag",      subject: "python",    title: "Python Drag",      emoji: "🧩",   Component: PythonDrag },
+  // Physics: <=7 → arcade, 8-9 → shooter, 10+ → MCQ
+  { id: "physics-arcade",   subject: "physics",   title: "Physics Arcade",     emoji: "⚡",   Component: makeGame("Physics Arcade", "⚡", "physics", 7) },
+  { id: "physics-shooter",  subject: "physics",   title: "Physics Shooter",    emoji: "🎯",   Component: makeGame("Physics Shooter", "🎯", "physics", 9) },
+  // Chemistry: <=7 lab, 8-9 heist, 10 mcq, 11+ molecule forge
+  { id: "chem-lab",         subject: "chemistry", title: "Chem Lab",           emoji: "🧪",   Component: makeGame("Chem Lab", "🧪", "chemistry", 7) },
+  { id: "chem-heist",       subject: "chemistry", title: "Chem Heist",         emoji: "🦹‍♂️", Component: makeGame("Chem Heist", "🦹‍♂️", "chemistry", 9) },
+  // Biology: <=7 defence, 8-9 DNA, 10+ ecosystem
+  { id: "bio-defence",      subject: "biology",   title: "Bio Defence",        emoji: "🦠",   Component: makeGame("Bio Defence", "🦠", "biology", 7) },
+  { id: "bio-dna",          subject: "biology",   title: "Bio DNA Builder",    emoji: "🧬",   Component: makeGame("Bio DNA Builder", "🧬", "biology", 9) },
+  { id: "bio-eco",          subject: "biology",   title: "Ecosystem Architect",emoji: "🌿",   Component: makeGame("Ecosystem Architect", "🌿", "biology", 11) },
+  // Maths: <=7 ninja, 8 laser, 9 cannon, 10 mission, 11+ calculus
+  { id: "maths-ninja",      subject: "maths",     title: "Maths Ninja",        emoji: "🥷",   Component: makeGame("Maths Ninja", "🥷", "maths", 7) },
+  { id: "maths-laser",      subject: "maths",     title: "Maths Laser",        emoji: "🔫",   Component: makeGame("Maths Laser", "🔫", "maths", 8) },
+  { id: "maths-cannon",     subject: "maths",     title: "Maths Cannon",       emoji: "💣",   Component: makeGame("Maths Cannon", "💣", "maths", 9) },
+  { id: "maths-mission",    subject: "maths",     title: "Maths Mission",      emoji: "🚀",   Component: makeGame("Maths Mission", "🚀", "maths", 10) },
+  { id: "calculus-coaster", subject: "maths",     title: "Calculus Coaster",   emoji: "🎢",   Component: makeGame("Calculus Coaster", "🎢", "maths", 11) },
+  // Python: <=8 fill, 9-10 debug, 11+ drag
+  { id: "python-fill",      subject: "python",    title: "Python Fill",        emoji: "🐍",   Component: makeGame("Python Fill", "🐍", "python", 8) },
+  { id: "python-debug",     subject: "python",    title: "Python Debug",       emoji: "🐛",   Component: makeGame("Python Debug", "🐛", "python", 10) },
+  { id: "python-drag",      subject: "python",    title: "Python Drag",        emoji: "🧩",   Component: makeGame("Python Drag", "🧩", "python", 11) },
 ] as const;
 
 export type GameId = typeof ALL_GAMES[number]["id"];
