@@ -102,6 +102,10 @@ export default function Index() {
   const handleQuizComplete = async (xpEarned: number, correctCount: number) => {
     if (!user) return;
     const questionsUsed = quizSubject ? quizQuestions.filter(q => q.subject === quizSubject) : quizQuestions;
+    try {
+      const key = `games_played_${user.id}`;
+      localStorage.setItem(key, String(Number(localStorage.getItem(key) ?? 0) + 1));
+    } catch { /* ignore */ }
     await Promise.all([
       addXpToProfile(user.id, xpEarned),
       saveQuizScore({
