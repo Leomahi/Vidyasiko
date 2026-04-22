@@ -118,6 +118,10 @@ export default function Index() {
 
   const handleGenericXp = async (xpEarned: number) => {
     if (!user) return;
+    try {
+      const key = `games_played_${user.id}`;
+      localStorage.setItem(key, String(Number(localStorage.getItem(key) ?? 0) + 1));
+    } catch { /* ignore */ }
     await addXpToProfile(user.id, xpEarned);
     await loadData();
   };
