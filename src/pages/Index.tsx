@@ -5,6 +5,8 @@ import { Language, t, getSubjectName } from "@/lib/translations";
 import { useAuth } from "@/hooks/useAuth";
 import { getProfile, getLeaderboard, addXpToProfile, saveQuizScore, updateProfile, syncPendingActions, Profile } from "@/lib/db";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { computeBadges } from "@/lib/badges";
+import { toast } from "@/hooks/use-toast";
 import { getCSSubTopicsForGrade } from "@/lib/csSubTopics";
 import { csSubTopicQuestions } from "@/lib/csSubTopics";
 import { getNewGameData } from "@/lib/newGameData";
@@ -45,6 +47,21 @@ export default function Index() {
   const loadData = useCallback(async () => {
     if (!user) return;
     const [p, lb] = await Promise.all([getProfile(user.id), getLeaderboard()]);
+    if (p) {
+      const gamesPlayed = Number(localStorage.getItem(`games_played_${user.id}`) ?? 0);
+      const { merged, earned } = computeBadges(p, { gamesPlayed });
+      if (earned.length > 0) {
+        try {
+          await updateProfile(user.id, { badges: merged } as any);
+          p.badges = merged;
+          earned.forEach((b) =>
+            toast({ title: "Badge unlocked!", description: b })
+          );
+        } catch {
+          /* offline — will retry on next sync */
+        }
+      }
+    }
     setProfile(p);
     setLeaderboardData(lb);
   }, [user]);
