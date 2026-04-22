@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Heart, Zap, Trophy } from "lucide-react";
+import { ArrowLeft, Heart, Zap, Trophy, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { installEngine } from "./originalEngine";
 
@@ -15,9 +15,39 @@ interface Props {
   onComplete: (xpEarned: number, correctCount: number) => void;
 }
 
+/** Subject-specific tips shown when the player loses (low score finish). */
+const SOLUTION_HINTS: Record<Props["subject"], string[]> = {
+  physics: [
+    "Remember F = m · a — force equals mass times acceleration.",
+    "Energy is conserved: KE + PE stays constant in a closed system.",
+    "For projectiles, horizontal and vertical motion are independent.",
+  ],
+  chemistry: [
+    "Balance atoms on both sides of the equation before coefficients.",
+    "Acids donate H⁺; bases accept them. pH < 7 is acidic.",
+    "Electrons fill orbitals: 1s, 2s, 2p, 3s, 3p, 4s, 3d…",
+  ],
+  biology: [
+    "Mitochondria are the powerhouse of the cell — they make ATP.",
+    "DNA bases pair A↔T and G↔C.",
+    "Photosynthesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂.",
+  ],
+  maths: [
+    "PEMDAS: Parentheses → Exponents → ×÷ → +−.",
+    "For quadratics, try factoring before the formula.",
+    "Derivative of xⁿ is n·xⁿ⁻¹.",
+  ],
+  python: [
+    "Indentation matters — use 4 spaces consistently.",
+    "`==` compares values; `=` assigns. Don't mix them up.",
+    "Lists are mutable; tuples are not.",
+  ],
+};
+
 export default function OriginalGameShell({ subject, grade, title, emoji, onBack, onComplete }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [result, setResult] = useState<Result | null>(null);
+  const [showSolution, setShowSolution] = useState(false);
   const completedRef = useRef(false);
 
   useEffect(() => {
@@ -28,7 +58,10 @@ export default function OriginalGameShell({ subject, grade, title, emoji, onBack
       completedRef.current = true;
       const xp = Math.max(10, Math.round(score / 4));
       const correct = Math.max(1, Math.round(score / 25));
+      const failed = score < 30 || accuracy < 25;
       setResult({ score, accuracy, time });
+      // Show learning panel first if the player lost; XP awarded either way.
+      if (failed) setShowSolution(true);
       onComplete(xp, correct);
     };
 
@@ -55,6 +88,39 @@ export default function OriginalGameShell({ subject, grade, title, emoji, onBack
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (showSolution && result) {
+    const tips = SOLUTION_HINTS[subject] ?? [];
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md mx-auto bg-card rounded-3xl p-8 shadow-sm border border-border"
+      >
+        <div className="text-center mb-4">
+          <Lightbulb className="w-14 h-14 mx-auto text-accent mb-2" />
+          <h2 className="text-2xl font-bold">Don't worry — let's learn!</h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            You ran out of lives in {title}. Here's the answer key:
+          </p>
+        </div>
+        <ul className="space-y-3 mb-6">
+          {tips.map((tip, i) => (
+            <li
+              key={i}
+              className="bg-muted/40 rounded-xl p-3 text-sm leading-relaxed"
+            >
+              <span className="font-bold text-primary mr-2">{i + 1}.</span>
+              {tip}
+            </li>
+          ))}
+        </ul>
+        <Button onClick={() => setShowSolution(false)} className="w-full rounded-xl">
+          Got it — show my score
+        </Button>
+      </motion.div>
+    );
+  }
 
   if (result) {
     return (
