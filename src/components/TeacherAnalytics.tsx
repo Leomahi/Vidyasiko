@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Language, t } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { ArrowLeft, Users, BookOpen, TrendingUp, Target, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
