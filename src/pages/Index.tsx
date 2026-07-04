@@ -29,9 +29,10 @@ import GradeSelector from "@/components/GradeSelector";
 import GamesHub from "@/components/GamesHub";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Gamepad2, LogOut } from "lucide-react";
+import { GraduationCap, Gamepad2, LogOut, BookOpen } from "lucide-react";
+import CurriculumBrowser from "@/components/CurriculumBrowser";
 
-type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "fillblanks" | "truefalse" | "sorting" | "crossword" | "cs-subtopic" | "stem-arcade";
+type View = "dashboard" | "quiz" | "flashcards" | "matching" | "scramble" | "fillblanks" | "truefalse" | "sorting" | "crossword" | "cs-subtopic" | "stem-arcade" | "learn";
 type QuizSubjectFilter = string | null;
 
 export default function Index() {
@@ -218,6 +219,24 @@ export default function Index() {
   if (view === "crossword") return <div className="min-h-screen p-4 md:p-8"><CrosswordGame clues={newGameData.crosswordClues} onBack={() => setView("dashboard")} onComplete={handleGenericComplete} /></div>;
   if (view === "stem-arcade") return <div className="min-h-screen p-4 md:p-8"><GamesHub language={language} onBack={() => setView("dashboard")} onComplete={handleGenericXp} /></div>;
 
+  if (view === "learn" && userGrade) {
+    return (
+      <div className="min-h-screen">
+        <CurriculumBrowser
+          grade={userGrade}
+          language={language}
+          quizQuestions={quizQuestions}
+          onBack={() => setView("dashboard")}
+          onQuizComplete={(xp, correct, subjectId) => {
+            setQuizSubject(subjectId);
+            handleQuizComplete(xp, correct);
+          }}
+          onGameComplete={handleGenericXp}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -236,6 +255,10 @@ export default function Index() {
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
+          <Button onClick={() => setView("learn")} variant="outline" className="rounded-full gap-2">
+            <BookOpen className="w-4 h-4" />
+            Learn
+          </Button>
           <Button onClick={() => setView("stem-arcade")} className="rounded-full gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground">
             <Gamepad2 className="w-4 h-4" />
             {t("stemArcade", language)}
